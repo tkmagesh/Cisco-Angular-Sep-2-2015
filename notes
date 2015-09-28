@@ -1,0 +1,20 @@
+Module
+    - Logical container for your application components
+    - Assists in dependency injection (container)
+    
+Scope
+Directive
+Filter
+    - to transform the data for presentation purposes
+    
+Controller
+    - function to configure the scope object
+    
+
+Factory
+Service
+Provider
+Value
+Constant
+
+    
