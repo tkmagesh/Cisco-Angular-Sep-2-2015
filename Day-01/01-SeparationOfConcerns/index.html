@@ -37,20 +37,22 @@
             this.set = function(attrName, value){
                 data[attrName] = value;
                 //trigger change notification for /attrName/
-                var listenerFn = eventHandlers[attrName];
-                if (typeof listenerFn === 'function')
+                var listenerFns = eventHandlers[attrName] || [];
+                listenerFns.forEach(function(listenerFn){
                     listenerFn();
+                });
             };
             
             var eventHandlers = {
-                basic : null,
-                hra : null,
-                da : null,
-                tax : null,
-                salary : null
+                basic : [],
+                hra : [],
+                da : [],
+                tax : [],
+                salary : []
             };
             this.addListener = function(attrName, listenerFn){
-                eventHandlers[attrName] = listenerFn;
+                eventHandlers[attrName] = eventHandlers[attrName] || [];
+                eventHandlers[attrName].push(listenerFn);
             }
         }
         SalaryCalculator.prototype.calculate = function(){
@@ -80,9 +82,7 @@
                 calculator.calculate();
             });
             
-            $("#rangeTax").change(function(){
-                $("#spanTax").html(this.value);
-            });
+
             
             //React to model changes
             calculator.addListener('salary', function(){
@@ -99,6 +99,9 @@
             });
             calculator.addListener('tax', function(){
                 $("#rangeTax").val(calculator.get('tax'));
+            });
+            calculator.addListener('tax', function(){
+                $("#spanTax").html(calculator.get('tax'));
             });
             
         });

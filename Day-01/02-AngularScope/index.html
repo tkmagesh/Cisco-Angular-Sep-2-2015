@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular Scope</title>
+    <script src="jquery-1.11.3.js"></script>
+    <script src="angular.js"></script>
+    <script>
+    var greeter = {
+        name : '',
+        greetMsg : '',
+        greet : function(){
+            this.greetMsg = 'Hi ' + this.name + ", Have a nice day!";
+        }
+    };
+    $(function(){
+        angular.bootstrap(document.body, []);
+        window.scope = angular.element(document.body).scope();
+
+        scope.greeter = greeter;
+        //React to user actions
+        $("#txtName").change(function(){
+            scope.$apply(function(){
+                greeter.name = $("#txtName").val();
+            });
+        });
+        $("#btnGreet").click(function(){
+            scope.$apply(function(){
+                greeter.greet();
+            });
+        });
+
+        //React to model changes
+        scope.$watch("greeter.name", function(newValue, oldValue){
+            $("#txtName").val(newValue);
+        });
+        scope.$watch("greeter.greetMsg", function(newValue, oldValue){
+            $("#divMessage").html(newValue);
+        });
+
+    })
+
+    </script>
+</head>
+<body>
+    <label for="">Name : :</label>
+    <input type="text" name="" id="txtName">
+    <input type="button" value="Greet" id="btnGreet">
+    <div id="divMessage">[Greeting message here!]</div>
+</body>
+</html>
