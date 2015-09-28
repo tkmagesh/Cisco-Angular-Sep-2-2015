@@ -6,7 +6,7 @@
     <script src="angular.js"></script>
     <script>
         var calculatorApp = angular.module("calculatorApp", []);
-        var calculator = {
+        calculatorApp.value("calculator", {
             add : function(n1, n2){
                 return n1 + n2;
             },
@@ -19,8 +19,8 @@
             divide : function(n1, n2){
                 return n1 / n2;
             },
-        }
-        calculatorApp.controller("calculatorController", function($scope){
+        });
+        calculatorApp.controller("calculatorController", function($scope, calculator){
             $scope.number1 = '';
             $scope.number2 = '';
             $scope.operation = '';
@@ -30,6 +30,9 @@
                     n2 = parseInt($scope.number2, 10);
                 $scope.result = calculator[$scope.operation](n1, n2);
             };
+        });
+        calculatorApp.controller("dummyController", function($scope, calculator){
+            console.log(arguments);
         });
 
     </script>
@@ -45,5 +48,8 @@
     <input type="text" ng-model="number2">
     <input type="button" value="Calculate" id="btnCalculate" ng-click="calculate()">
     <div id="divResult" ng-bind="result">[Result]</div>
+    <div ng-controller="dummyController">
+
+    </div>
 </body>
 </html>
