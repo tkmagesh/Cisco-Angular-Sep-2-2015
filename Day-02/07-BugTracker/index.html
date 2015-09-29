@@ -16,11 +16,14 @@
         ol{
             width : 60%;
         }
-        li{
+        li span{
             cursor: pointer;
         }
         .stats{
             font-size: 16pt;
+        }
+        .selected{
+            font-size: 18pt;
         }
     </style>
     <script>
@@ -51,9 +54,9 @@
         var bugTrackerApp = angular.module("bugTrackerApp", []);
         bugTrackerApp.controller("bugsController", function($scope){
             $scope.bugs = [
-                 {name : "Stack overflow error", isClosed : false},
+                 {name : "Stack overflow error", isClosed : true},
                  {name : "Object reference not found", isClosed : false},
-                 {name : "undefined is not a function", isClosed : false},
+                 {name : "undefined is not a function", isClosed : true},
                  {name : "Server communication failure", isClosed : false},
             ];
             $scope.newBug = '';
@@ -78,6 +81,14 @@
                     return bug.isClosed;
                 }).length;
             };
+           /* $scope.searchBug = {};
+            $scope.initSearch = function(event){
+                if (event.keyCode === 13 || $scope.searchBugData === ''){
+                    $scope.searchBug.name = $scope.searchBugData;
+                    return;
+                }
+            }*/
+
         });
     </script>
 </head>
@@ -86,13 +97,18 @@
     <hr>
 
     <div class="content" ng-controller="bugsController">
-
         <div class="stats">
             <span class="closed">{{getClosedCount()}}</span>
             /
             <span>{{bugs.length}}</span>
         </div>
-        <div class="search"></div>
+        <div class="search">
+            <label for="">Search :</label>
+            <!--<input type="text" ng-model="searchBugData" ng-keyup="initSearch($event)">-->
+            <input type="text" ng-model="searchBug.name">
+            <label for="">Is Closed ? : </label>
+            <input type="checkbox" ng-model="searchBug.isClosed">
+        </div>
         <div class="sort"></div>
         <div class="list">
             <label for="">Bug :</label>
@@ -100,8 +116,14 @@
             <input type="button" value="Add Bug" ng-click="addNewBug(newBug)">
             <input type="button" value="Remove Closed" ng-click="removeClosed()">
             <ol>
-               <li ng-repeat="bug in bugs" ng-click="toggleBug(bug)" ng-class="{closed : bug.isClosed}">{{bug}}</li>
+               <li ng-repeat="bug in bugs | filter:searchBug" >
+                   <span ng-click="toggleBug(bug)" ng-class="{closed : bug.isClosed}">{{bug}}</span>
+                   <input type="radio" name="selectedBug" >
+                   </li>
             </ol>
+        </div>
+        <div class="selected">
+            [Selected bug will be displayed here]
         </div>
     </div>
 </body>
