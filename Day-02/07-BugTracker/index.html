@@ -50,8 +50,10 @@
     */
     </script>
     <script src="angular.js"></script>
+    <script src="utils.js"></script>
     <script>
-        var bugTrackerApp = angular.module("bugTrackerApp", []);
+        var bugTrackerApp = angular.module("bugTrackerApp", ["utils"]);
+        bugTrackerApp.value("defaultTrimLength", 50);
 
         bugTrackerApp.value("bugDefaults", {
             name : 'Default bug name',
@@ -114,13 +116,7 @@
             };*/
         });
 
-        bugTrackerApp.value("defaultTrimLength", 25);
-        bugTrackerApp.filter("trimText", function(defaultTrimLength){
-            return function(data, trimLength){
-                trimLength = trimLength || defaultTrimLength;
-                return data.length > trimLength ? data.substr(0,trimLength) + '...' : data;
-            }
-        });
+
 
         bugTrackerApp.filter('closedCount', function(){
             return function(data){
