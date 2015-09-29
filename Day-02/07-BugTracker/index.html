@@ -52,24 +52,41 @@
     <script src="angular.js"></script>
     <script>
         var bugTrackerApp = angular.module("bugTrackerApp", []);
-        bugTrackerApp.controller("bugsController", function($scope){
+
+        bugTrackerApp.value("bugDefaults", {
+            name : 'Default bug name',
+            isClosed : true
+        });
+
+        bugTrackerApp.factory("Bug", function(bugDefaults){
+            function Bug(defaults){
+                this.name = defaults.name || bugDefaults.name;
+                this.isClosed = typeof defaults.isClosed !== 'undefined' ? defaults.isClosed : bugDefaults.isClosed;
+            }
+            Bug.prototype.toggle = function(){
+                this.isClosed  = !this.isClosed;
+            };
+            return Bug;
+        });
+
+
+        bugTrackerApp.controller("bugsController", function($scope, Bug){
             $scope.bugs = [
-                 {name : "Stack overflow error", isClosed : true},
-                 {name : "Object reference not found", isClosed : false},
-                 {name : "undefined is not a function", isClosed : true},
-                 {name : "Server communication failure", isClosed : false},
+                new Bug({name : "Veniam e nam quem offendit, ne sunt non veniam. Esse quamquam ad quibusdam. Ex iis quae aliquip", isClosed : true}),
+                 new Bug({name : "Object reference not found", isClosed : false}),
+                 new Bug({name : "undefined is not a function", isClosed : true}),
+                 new Bug({name : "Server communication failure", isClosed : false}),
             ];
             $scope.newBug = '';
             $scope.addNewBug = function(newBugName){
-                var bug = {
-                    name : newBugName,
-                    isClosed : false
-                };
+                var bug = new Bug({
+                    name : newBugName
+                });
                 $scope.bugs.push(bug);
                 $scope.newBug = '';
             };
             $scope.toggleBug = function(bug){
-                bug.isClosed = !bug.isClosed;
+                bug.toggle();
             };
             $scope.removeClosed = function(){
                 for(var i=$scope.bugs.length-1; i >=0; i--)
@@ -98,6 +115,12 @@
                 selectedBug : null
             };*/
         });
+
+        bugTrackerApp.filter("trimText", function(){
+            return function(data){
+                return data.length > 30 ? data.substr(0,30) + '...' : data;
+            }
+        })
     </script>
 </head>
 <body ng-app="bugTrackerApp">
@@ -134,7 +157,9 @@
             <input type="button" value="Remove Closed" ng-click="removeClosed()">
             <ol>
                <li ng-repeat="bug in bugs | filter:searchBug | orderBy:sortBugBy:sortBugOrder" >
-                   <span ng-click="toggleBug(bug)" ng-class="{closed : bug.isClosed}">{{bug}}</span>
+                   <span ng-click="toggleBug(bug)" ng-class="{closed : bug.isClosed}">
+                        {{bug.name | trimText}}
+                    </span>
                    <!--<input type="radio" name="selectedBug" ng-click="data.selectedBug = bug" >-->
                    </li>
             </ol>
