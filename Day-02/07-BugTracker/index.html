@@ -94,9 +94,7 @@
                         $scope.bugs.splice(i,1);
             };
             $scope.getClosedCount = function(){
-                return $scope.bugs.filter(function(bug){
-                    return bug.isClosed;
-                }).length;
+
             };
 
            /* $scope.searchBug = {};
@@ -116,11 +114,21 @@
             };*/
         });
 
-        bugTrackerApp.filter("trimText", function(){
-            return function(data){
-                return data.length > 30 ? data.substr(0,30) + '...' : data;
+        bugTrackerApp.value("defaultTrimLength", 25);
+        bugTrackerApp.filter("trimText", function(defaultTrimLength){
+            return function(data, trimLength){
+                trimLength = trimLength || defaultTrimLength;
+                return data.length > trimLength ? data.substr(0,trimLength) + '...' : data;
             }
-        })
+        });
+
+        bugTrackerApp.filter('closedCount', function(){
+            return function(data){
+                return data.filter(function(bug){
+                    return bug.isClosed;
+                }).length;
+            };
+        });
     </script>
 </head>
 <body ng-app="bugTrackerApp">
@@ -129,7 +137,7 @@
 
     <div class="content" ng-controller="bugsController">
         <div class="stats">
-            <span class="closed">{{getClosedCount()}}</span>
+            <span class="closed">{{bugs | closedCount}}</span>
             /
             <span>{{bugs.length}}</span>
         </div>
