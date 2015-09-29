@@ -28,11 +28,11 @@
         Use cases
         =========
 
-        1. Display a list of bugs
-        2. Add a new bug
-        3. Toggle the closed status of bugs
-        4. Remove closed bugs
-        5. Display statistics (No of closed / total no of bugs)
+        1. Display a list of bugs - done
+        2. Add a new bug - done
+        3. Toggle the closed status of bugs - done
+        4. Remove closed bugs - done
+        5. Display statistics (No of closed / total no of bugs) - done
         6. Search for bugs
         7. Sort the bugs
         8. Improvise the bug display
@@ -51,11 +51,33 @@
         var bugTrackerApp = angular.module("bugTrackerApp", []);
         bugTrackerApp.controller("bugsController", function($scope){
             $scope.bugs = [
-                "Stack overflow error",
-                "Object reference not found",
-                "undefined is not a function",
-                "Server communication failure"
+                 {name : "Stack overflow error", isClosed : false},
+                 {name : "Object reference not found", isClosed : false},
+                 {name : "undefined is not a function", isClosed : false},
+                 {name : "Server communication failure", isClosed : false},
             ];
+            $scope.newBug = '';
+            $scope.addNewBug = function(newBugName){
+                var bug = {
+                    name : newBugName,
+                    isClosed : false
+                };
+                $scope.bugs.push(bug);
+                $scope.newBug = '';
+            };
+            $scope.toggleBug = function(bug){
+                bug.isClosed = !bug.isClosed;
+            };
+            $scope.removeClosed = function(){
+                for(var i=$scope.bugs.length-1; i >=0; i--)
+                    if ($scope.bugs[i].isClosed)
+                        $scope.bugs.splice(i,1);
+            };
+            $scope.getClosedCount = function(){
+                return $scope.bugs.filter(function(bug){
+                    return bug.isClosed;
+                }).length;
+            };
         });
     </script>
 </head>
@@ -64,8 +86,9 @@
     <hr>
 
     <div class="content" ng-controller="bugsController">
+
         <div class="stats">
-            <span class="closed">3</span>
+            <span class="closed">{{getClosedCount()}}</span>
             /
             <span>{{bugs.length}}</span>
         </div>
@@ -73,13 +96,11 @@
         <div class="sort"></div>
         <div class="list">
             <label for="">Bug :</label>
-            <input type="text" name="" id="">
-            <input type="button" value="Add Bug">
-            <input type="button" value="Remove Closed">
+            <input type="text" ng-model="newBug">
+            <input type="button" value="Add Bug" ng-click="addNewBug(newBug)">
+            <input type="button" value="Remove Closed" ng-click="removeClosed()">
             <ol>
-                <li>Stack overflow error</li>
-                <li>Object reference not found</li>
-                <li class="closed">Server communication failure</li>
+               <li ng-repeat="bug in bugs" ng-click="toggleBug(bug)" ng-class="{closed : bug.isClosed}">{{bug}}</li>
             </ol>
         </div>
     </div>
