@@ -15,9 +15,23 @@
         }
         ol{
             width : 60%;
+            list-style: none;
+        }
+        li{
+            margin-bottom: 10px;
+            border : 2px solid gray;
+            background-color: lightgrey;
+            padding: 4px;
+            border-radius: 4px;
+        }
+        li div{
+
+            margin-bottom: 5px;
+            font-size: 16pt;
+            cursor: pointer;
         }
         li span{
-            cursor: pointer;
+            font-style: italic;
         }
         .stats{
             font-size: 16pt;
@@ -25,6 +39,7 @@
         .selected{
             font-size: 18pt;
         }
+
     </style>
     <script>
     /*
@@ -40,6 +55,20 @@
         7. Sort the bugs - done
         8. Improvise the bug display
         9. Persist the bugs in the storage
+            window.localStorage
+            ===================
+                * key/value store
+                * both key and value should be strings
+                * API
+                *   - setItem(k, v)
+                *   - getItem(k) //=> v
+                *   - removeItem(k)
+                *   - key(index) // => k
+                *   - length
+                *   - clear()
+            * key - id starting from 1
+            * value - angular.toJson(obj) and angular.fromJson(string) for searialization / deserialization
+
         10. Display "createdAt" for each bug
         11. Persist the bugs in the server
 
@@ -49,6 +78,7 @@
 
     */
     </script>
+    <script src="moment.js"></script>
     <script src="angular.js"></script>
     <script src="utils.js"></script>
     <script>
@@ -64,6 +94,7 @@
             function Bug(defaults){
                 this.name = defaults.name || bugDefaults.name;
                 this.isClosed = typeof defaults.isClosed !== 'undefined' ? defaults.isClosed : bugDefaults.isClosed;
+                this.createdAt = defaults.createdAt || new Date();
             }
             Bug.prototype.toggle = function(){
                 this.isClosed  = !this.isClosed;
@@ -74,10 +105,10 @@
 
         bugTrackerApp.controller("bugsController", function($scope, Bug){
             $scope.bugs = [
-                new Bug({name : "Veniam e nam quem offendit, ne sunt non veniam. Esse quamquam ad quibusdam. Ex iis quae aliquip", isClosed : true}),
-                 new Bug({name : "Object reference not found", isClosed : false}),
-                 new Bug({name : "undefined is not a function", isClosed : true}),
-                 new Bug({name : "Server communication failure", isClosed : false}),
+                new Bug({name : "Veniam e nam quem offendit, ne sunt non veniam. Esse quamquam ad quibusdam. Ex iis quae aliquip", isClosed : true, createdAt : new Date(2015, 8, 29)}),
+                 new Bug({name : "Object reference not found", isClosed : false, createdAt : new Date(2015,  8, 28)}),
+                 new Bug({name : "undefined is not a function", isClosed : true, createdAt : new Date(2015,  8, 27)}),
+                 new Bug({name : "Server communication failure", isClosed : false, createdAt : new Date(2015,  8, 27)}),
             ];
             $scope.newBug = '';
             $scope.addNewBug = function(newBugName){
@@ -95,8 +126,10 @@
                     if ($scope.bugs[i].isClosed)
                         $scope.bugs.splice(i,1);
             };
-            $scope.getClosedCount = function(){
 
+            //Convert the following in to a filter
+            $scope.toMoment = function(date){
+                return moment(date).fromNow();
             };
 
            /* $scope.searchBug = {};
@@ -115,8 +148,6 @@
                 selectedBug : null
             };*/
         });
-
-
 
         bugTrackerApp.filter('closedCount', function(){
             return function(data){
@@ -161,8 +192,11 @@
             <input type="button" value="Remove Closed" ng-click="removeClosed()">
             <ol>
                <li ng-repeat="bug in bugs | filter:searchBug | orderBy:sortBugBy:sortBugOrder" >
-                   <span ng-click="toggleBug(bug)" ng-class="{closed : bug.isClosed}">
+                   <div ng-click="toggleBug(bug)" ng-class="{closed : bug.isClosed}">
                         {{bug.name | trimText}}
+                    </div>
+                    <span>
+                        {{toMoment(bug.createdAt)}}
                     </span>
                    <!--<input type="radio" name="selectedBug" ng-click="data.selectedBug = bug" >-->
                    </li>
