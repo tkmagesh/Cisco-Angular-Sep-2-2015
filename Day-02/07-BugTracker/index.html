@@ -36,8 +36,8 @@
         3. Toggle the closed status of bugs - done
         4. Remove closed bugs - done
         5. Display statistics (No of closed / total no of bugs) - done
-        6. Search for bugs
-        7. Sort the bugs
+        6. Search for bugs - done
+        7. Sort the bugs - done
         8. Improvise the bug display
         9. Persist the bugs in the storage
         10. Display "createdAt" for each bug
@@ -81,6 +81,7 @@
                     return bug.isClosed;
                 }).length;
             };
+
            /* $scope.searchBug = {};
             $scope.initSearch = function(event){
                 if (event.keyCode === 13 || $scope.searchBugData === ''){
@@ -89,6 +90,13 @@
                 }
             }*/
 
+            /*$scope.selectedBug = null;
+            $scope.setSelectedBug = function(bug){
+                $scope.selectedBug = bug;
+            };*/
+           /* $scope.data = {
+                selectedBug : null
+            };*/
         });
     </script>
 </head>
@@ -108,23 +116,33 @@
             <input type="text" ng-model="searchBug.name">
             <label for="">Is Closed ? : </label>
             <input type="checkbox" ng-model="searchBug.isClosed">
+            <input type="button" value="Show All" ng-click="searchBug.isClosed = undefined">
         </div>
-        <div class="sort"></div>
+        <div class="sort">
+            <label for="">Sort :</label>
+            <select ng-model="sortBugBy">
+                <option value="name">Name</option>
+                <option value="isClosed">Status</option>
+            </select>
+            <label for="">Descending ? : </label>
+            <input type="checkbox" ng-model = "sortBugOrder">
+        </div>
         <div class="list">
             <label for="">Bug :</label>
             <input type="text" ng-model="newBug">
             <input type="button" value="Add Bug" ng-click="addNewBug(newBug)">
             <input type="button" value="Remove Closed" ng-click="removeClosed()">
             <ol>
-               <li ng-repeat="bug in bugs | filter:searchBug" >
+               <li ng-repeat="bug in bugs | filter:searchBug | orderBy:sortBugBy:sortBugOrder" >
                    <span ng-click="toggleBug(bug)" ng-class="{closed : bug.isClosed}">{{bug}}</span>
-                   <input type="radio" name="selectedBug" >
+                   <!--<input type="radio" name="selectedBug" ng-click="data.selectedBug = bug" >-->
                    </li>
             </ol>
         </div>
-        <div class="selected">
-            [Selected bug will be displayed here]
-        </div>
+        <!--<div class="selected">
+           {{selectedBug}}
+           {{data.selectedBug}}
+        </div>-->
     </div>
 </body>
 </html>
