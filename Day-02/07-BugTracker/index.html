@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bug Tracker</title>
+    <style>
+        div {
+            margin-bottom: 10px;
+        }
+        .closed {
+            color : red;
+            text-decoration: line-through;
+            font-style: italic;
+            font-weight: bold;
+        }
+        ol{
+            width : 60%;
+        }
+        li{
+            cursor: pointer;
+        }
+        .stats{
+            font-size: 16pt;
+        }
+    </style>
+    <script>
+    /*
+        Use cases
+        =========
+
+        1. Display a list of bugs
+        2. Add a new bug
+        3. Toggle the closed status of bugs
+        4. Remove closed bugs
+        5. Display statistics (No of closed / total no of bugs)
+        6. Search for bugs
+        7. Sort the bugs
+        8. Improvise the bug display
+        9. Persist the bugs in the storage
+        10. Display "createdAt" for each bug
+        11. Persist the bugs in the server
+
+        12. Edit the bugs
+        ==================
+        13. Include the "Project" functionality
+
+    */
+    </script>
+    <script src="angular.js"></script>
+    <script>
+        var bugTrackerApp = angular.module("bugTrackerApp", []);
+        bugTrackerApp.controller("bugsController", function($scope){
+            $scope.bugs = [
+                "Stack overflow error",
+                "Object reference not found",
+                "undefined is not a function",
+                "Server communication failure"
+            ];
+        });
+    </script>
+</head>
+<body ng-app="bugTrackerApp">
+    <h1>Bug Tracker</h1>
+    <hr>
+
+    <div class="content" ng-controller="bugsController">
+        <div class="stats">
+            <span class="closed">3</span>
+            /
+            <span>{{bugs.length}}</span>
+        </div>
+        <div class="search"></div>
+        <div class="sort"></div>
+        <div class="list">
+            <label for="">Bug :</label>
+            <input type="text" name="" id="">
+            <input type="button" value="Add Bug">
+            <input type="button" value="Remove Closed">
+            <ol>
+                <li>Stack overflow error</li>
+                <li>Object reference not found</li>
+                <li class="closed">Server communication failure</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>
