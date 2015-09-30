@@ -150,8 +150,8 @@
             };
         });
 
-        bugTrackerApp.config(function(bugStorageProvider, BugProvider){
-
+        bugTrackerApp.config(function(bugStorageProvider, BugProvider, $httpProvider){
+            console.log("$httpProvider = ", $httpProvider);
             bugStorageProvider.setStorageOption('localStorage');
             console.log("In config - BugProvider", BugProvider);
         });
