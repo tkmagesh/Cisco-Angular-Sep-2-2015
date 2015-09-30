@@ -17,12 +17,6 @@
       "name": "Stack overflow error",
       "isClosed": false,
       "createdAt": "2015-09-21T09:21:27.909Z"
-    },
-    {
-      "id": 4,
-      "name": "Server communication failure",
-      "isClosed": true,
-      "createdAt": "2015-09-23T10:52:50.598Z"
     }
   ]
 }
