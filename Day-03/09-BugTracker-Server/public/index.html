@@ -92,7 +92,7 @@
 
         bugTrackerApp.factory("Bug", function(bugDefaults){
             function Bug(defaults){
-                this.id = defaults.id || -1;
+                this.id = defaults.id || 0;
                 this.name = defaults.name || bugDefaults.name;
                 this.isClosed = typeof defaults.isClosed !== 'undefined' ? defaults.isClosed : bugDefaults.isClosed;
                 this.createdAt = defaults.createdAt || new Date();
@@ -103,16 +103,42 @@
             return Bug;
         });
 
+        bugTrackerApp.factory("bugService", function($http, Bug, $q){
+            /*function getAllBugs(){
+                var deferred = $q.defer();
 
-        bugTrackerApp.controller("bugsController", function($scope, Bug, $http){
-            $scope.bugs = [];
-            var promise = $http.get("/bugs/");
-            promise.then(function(response){
-                console.log(response);
-                $scope.bugs = response.data.map(function(bugData){
-                    return new Bug(bugData);
+                var promise = $http.get("/bugs/");
+                promise.then(function(response){
+                    var result = response.data.map(function(bugData){
+                        return new Bug(bugData);
+                    });
+                    deferred.resolve(result);
                 });
+                return deferred.promise;
+            } */
+            function getAllBugs(){
+                return $http
+                    .get("/bugs/")
+                    .then(function(response){
+                        var result = response.data.map(function(bugData){
+                            return new Bug(bugData);
+                        });
+                        return result;
+                    });
+
+            }
+            return{
+                getAll : getAllBugs
+            }
+        });
+
+        bugTrackerApp.controller("bugsController", function($scope, Bug, bugService){
+            $scope.bugs = [];
+            bugService.getAll().then(function(bugs){
+                $scope.bugs = bugs;
             });
+
+
             $scope.newBug = '';
             $scope.addNewBug = function(newBugName){
                 var bug = new Bug({
