@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Routing App</title>
+    <script src="angular.js"></script>
+    <script src="angular-route.js"></script>
+    <script>
+        var routingApp = angular.module("routingApp", ['ngRoute']);
+        routingApp.config(function($routeProvider){
+           $routeProvider
+                .when("/products", {
+                    //template : '<h3>Products</h3>'
+                    templateUrl : 'templates/products.html',
+                    controller : 'productsController'
+                })
+                .when("/products/:id", {
+                    templateUrl : 'templates/productInfo.html',
+                    controller : 'productInfoController'
+                })
+                .when("/customers", {
+                    //template : '<h3>Customers</h3>'
+                    templateUrl : 'templates/customers.html'
+                })
+                .otherwise({
+                    redirectTo : 'products'
+                });
+        });
+        routingApp.factory("productService", function(){
+            function getAllProducts(){
+                return [
+                    {id :1, name : "Pen", cost : 20, units : 100, desc : "Quid eiusmod in anim quorum. Probant do aliqua, ne dolor sunt tamen deserunt. Te aliqua offendit reprehenderit, nulla cupidatat relinqueret id id amet tempor an singulis quorum dolor laboris enim sed aute iudicem eu firmissimum, est in culpa aute lorem, aute ubi pariatur ex aliquip culpa incurreret. Qui o cohaerescant id consequat sint illum cupidatat irure, excepteur fugiat ex vidisse amiliaritatem, elit pariatur in esse esse, legam et e veniam mandaremus, aut velit cohaerescant iis dolore voluptate quamquam ab vidisse exercitation ne occaecat. Quorum cernantur ea aliqua amet, cillum cupidatat se coniunctione. Esse ab ad duis offendit. Vidisse cillum ingeniis, o laboris exquisitaque, ad quis philosophari non quae firmissimum aliquip dolor incurreret, a veniam magna ab mentitum, pariatur e ullamco sed quid eu quamquam an fugiat ad offendit. Ad vidisse tractavissent, cupidatat hic offendit, an sunt sed esse, vidisse multos deserunt excepteur."},
+                    {id :2, name : "Hen", cost : 80, units : 50, desc : "Quid eiusmod in anim quorum. Probant do aliqua, ne dolor sunt tamen deserunt. Te aliqua offendit reprehenderit, nulla cupidatat relinqueret id id amet tempor an singulis quorum dolor laboris enim sed aute iudicem eu firmissimum, est in culpa aute lorem, aute ubi pariatur ex aliquip culpa incurreret. Qui o cohaerescant id consequat sint illum cupidatat irure, excepteur fugiat ex vidisse amiliaritatem, elit pariatur in esse esse, legam et e veniam mandaremus, aut velit cohaerescant iis dolore voluptate quamquam ab vidisse exercitation ne occaecat. Quorum cernantur ea aliqua amet, cillum cupidatat se coniunctione. Esse ab ad duis offendit. Vidisse cillum ingeniis, o laboris exquisitaque, ad quis philosophari non quae firmissimum aliquip dolor incurreret, a veniam magna ab mentitum, pariatur e ullamco sed quid eu quamquam an fugiat ad offendit. Ad vidisse tractavissent, cupidatat hic offendit, an sunt sed esse, vidisse multos deserunt excepteur."},
+                    {id :3, name : "Ten", cost : 10, units : 10, desc : "[Products with id 3 dont have description]"},
+                    {id :4, name : "Den", cost : 90, units : 20, desc : "Quid eiusmod in anim quorum. Probant do aliqua, ne dolor sunt tamen deserunt. Te aliqua offendit reprehenderit, nulla cupidatat relinqueret id id amet tempor an singulis quorum dolor laboris enim sed aute iudicem eu firmissimum, est in culpa aute lorem, aute ubi pariatur ex aliquip culpa incurreret. Qui o cohaerescant id consequat sint illum cupidatat irure, excepteur fugiat ex vidisse amiliaritatem, elit pariatur in esse esse, legam et e veniam mandaremus, aut velit cohaerescant iis dolore voluptate quamquam ab vidisse exercitation ne occaecat. Quorum cernantur ea aliqua amet, cillum cupidatat se coniunctione. Esse ab ad duis offendit. Vidisse cillum ingeniis, o laboris exquisitaque, ad quis philosophari non quae firmissimum aliquip dolor incurreret, a veniam magna ab mentitum, pariatur e ullamco sed quid eu quamquam an fugiat ad offendit. Ad vidisse tractavissent, cupidatat hic offendit, an sunt sed esse, vidisse multos deserunt excepteur."},
+                    {id :5, name : "Zen", cost : 0, units : "infinity", desc : "Quid eiusmod in anim quorum. Probant do aliqua, ne dolor sunt tamen deserunt. Te aliqua offendit reprehenderit, nulla cupidatat relinqueret id id amet tempor an singulis quorum dolor laboris enim sed aute iudicem eu firmissimum, est in culpa aute lorem, aute ubi pariatur ex aliquip culpa incurreret. Qui o cohaerescant id consequat sint illum cupidatat irure, excepteur fugiat ex vidisse amiliaritatem, elit pariatur in esse esse, legam et e veniam mandaremus, aut velit cohaerescant iis dolore voluptate quamquam ab vidisse exercitation ne occaecat. Quorum cernantur ea aliqua amet, cillum cupidatat se coniunctione. Esse ab ad duis offendit. Vidisse cillum ingeniis, o laboris exquisitaque, ad quis philosophari non quae firmissimum aliquip dolor incurreret, a veniam magna ab mentitum, pariatur e ullamco sed quid eu quamquam an fugiat ad offendit. Ad vidisse tractavissent, cupidatat hic offendit, an sunt sed esse, vidisse multos deserunt excepteur."}
+                ]
+            }
+            return {
+                getAll : getAllProducts
+            };
+        });
+        routingApp.controller("productsController", function($scope, productService){
+            $scope.products = productService.getAll();
+        });
+        routingApp.controller("productInfoController", function($scope, productService, $routeParams){
+            var pid = parseInt($routeParams.id);
+            $scope.product = productService.getAll().filter(function(product){
+                return product.id === pid;
+            })[0];
+        });
+    </script>
+</head>
+<body ng-app="routingApp">
+    <h1>Flopkart</h1>
+    <div><a href="#products">Products</a>  <a href="#customers">Customers</a></div>
+    <hr>
+    <div ng-view>
+
+    </div>
+</body>
+</html>
